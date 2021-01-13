@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta  http-equiv="Content-type" content="text/html;charset=utf-8">
+		<title>Lab4-e</title>
+		<script id="rtvshader" type="x-shader/x-vertex">
+			attribute vec4 vPosition;
+			attribute vec4 vColor;
+            varying vec4 fColor;
+            uniform vec2 theta;
+			uniform vec2 volume;
+			uniform vec2 distance;
+			
+			void main(){
+				vec2 angles = radians(theta);
+				vec2 cost = cos(theta);
+                vec2 sint = sin(theta);
+                
+				mat4 rx = mat4(  1.0,  0.0,  0.0, 0.0,
+						 0.0,  cost.x,  sint.x, 0.0,
+						 0.0,  -sint.x,  cost.x, 0.0,
+						 0.0,  0.0,  0.0, 1.0
+                         );
+                         
+				mat4 ry = mat4(cost.y, 0.0, -sint.y, 0.0,
+							   0.0, 1.0, 0.0, 0.0,
+							   sint.y, 0.0, cost.y, 0.0,
+							   0.0, 0.0, 0.0, 1.0);
+				
+                mat4 rz = mat4(cost[1],  sint[1],  0.0,  0.0,
+                               -sint[1],  cost[1],  0.0,  0.0,
+                               0.0,  0.0,  1.0,  0.0,
+                               0.0,  0.0,  0.0,  1.0
+                               );
+                mat4 dxyz=mat4(1.0,  0.0,  0.0, 0.0,
+                               0.0,  1.0,  0.0, 0.0,
+                               0.0,  0.0,  1.0, 0.0,
+                              distance[0] ,  distance[1], 0.0, 1.0
+                            );
+                mat4 sxyz=mat4(1.0+volume[0],  0.0,  0.0, 0.0,
+                               0.0,  1.0+volume[1],  0.0, 0.0,
+                               0.0,  0.0,  1.0, 0.0,
+                               0.0,  0.0,  0.0, 1.0
+                             );
+
+				fColor = vColor;			   
+				gl_Position = vPosition;
+				gl_Position = dxyz * sxyz * ry * rz * rx * gl_Position;
+				gl_Position.z = -gl_Position.z;		
+			}
+		</script>
+		<script id="rtfshader" type="x-shader/x-fragment">
+			precision mediump float;
+			varying vec4 fColor;
+			
+			void main(){
+				gl_FragColor = fColor;
+			}
+		</script>
+		<script type="text/javascript" src="common/gl-matrix-min.js"></script>
+		<script type="text/javascript" src="common/initShaders.js"></script>
+		<script type="text/javascript" src="common/webgl-utils.js"></script>
+        
+        <script type="text/javascript" src="js/Lab4-e.js"></script>
+	</head>
+    
+    <body>
+		<h1>Lab4-e</h1>
+		<h4>本实验借鉴了周矩华等同学的代码，再次表示十分感谢</h4>
+		<canvas id="lab4-canvas" width="600" height="600">
+		</canvas>
+        <div>
+		<h4>请选择图形</h4>
+		<select id="graph" size="1">
+		    <option value ="0" selected="selected">正三角形</option>
+		    <option value ="1">正方形</option>
+		    <option value ="2">立方体</option>
+			<option value ="3">圆形</option>
+		</select>
+        </br>
+		<h4>圆的边数</h4>
+        <input type="range" id="edges" value="4" min="2" max="10"/>
+		</br>
+		<button id="clear">清空</button>
+        </br>
+        </div>
+	</body>
+</html>
