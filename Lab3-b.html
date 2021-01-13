@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+		<title>Lab3-b</title>
+		<!-- 顶点着色器和片元着色器代码 -->
+		<script id="vertex-shader" type="x-shader/x-vertex">
+		attribute vec4 vPosition;
+        uniform float theta;
+	    void main()
+	    {
+		    float u = cos( theta );
+		    float v = sin( theta );
+		    gl_Position.x = vPosition.x * u - vPosition.y * v;
+		    gl_Position.y = vPosition.x * v + vPosition.y * u;
+		    gl_Position.z = 0.0;
+            gl_Position.w = 1.0;
+
+	    }
+		</script>
+		<script id="fragment-shader" type="x-shader/x-fragment">
+			precision mediump float;
+			void main(){
+				gl_FragColor = vec4( 0.0, 1.0, 0.0, 0.5 );
+			}
+		</script>
+		<!-- 一组相关的JS库 -->
+		<script type="text/javascript" src="common/webgl-utils.js"></script>
+		<script type="text/javascript" src="common/initShaders.js"></script>
+		<script type="text/javascript" src="common/glMatrix-0.9.5.min.js"></script>
+		<!-- 绘制三角形和四边形的JS代码 -->
+		<script type="text/javascript" src="js/Lab3-b.js"></script>
+	</head>
+	<body onload="initRotSquare()">
+        <h1>Lab3-b</h1><br>
+		<canvas id="triangle-canvas" style="border:none;" width="500" height="500"></canvas>
+		<button id="direction" onclick="stop()">停止</button>
+		<button id="direction" onclick="star()">开始</button>
+		<button id="direction" onclick="changeDir()">换个转动方向</button>
+	    <input type="range" id="speedcon" min="0" max="300" value="50" step="25">
+	</body>
+</html>
